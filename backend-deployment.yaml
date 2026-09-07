@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: backend 
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: kunal723121/backend1
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  key: MONGO_URI
+                  name: backend-secret
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  key: PORT
+                  name: backend-secret
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  key: NODE_ENV
+                  name: backend-secret 
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: backend-secret      
